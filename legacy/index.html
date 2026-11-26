@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ca" manifest="cache.appcache">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vendes prova">
+<title>Cent Agulles · Prova iOS 9</title>
+<style>
+* {box-sizing:border-box} body{margin:0;background:#f2f5f4;color:#163746;font:17px Arial,sans-serif} header{background:#174e65;color:white;padding:18px} header small{font-size:13px;letter-spacing:1px} h1{font-size:25px;margin:6px 0 0} main{max-width:760px;margin:0 auto;padding:12px} section{background:white;border:1px solid #d5e0df;border-radius:10px;padding:14px;margin-bottom:12px} h2{font-size:19px;margin:0 0 12px} p{line-height:1.45;margin:8px 0} .notice{background:#fff1d9;padding:10px;border-radius:5px;color:#794610} .status{font-size:15px;line-height:1.55} .ok{color:#176442} .bad{color:#a12929} .model{display:table;width:100%;padding:12px 0;border-bottom:1px solid #e1e9e7} .model:last-child{border:0} .name,.counter{display:table-cell;vertical-align:middle} .name{width:53%} .name small{display:block;color:#546c74;margin-top:5px} .counter{text-align:right;white-space:nowrap} .count{display:inline-block;width:38px;text-align:center;font-size:23px;font-weight:bold} button,.action{font:inherit;display:inline-block;background:#174e65;color:#fff;border:1px solid #174e65;border-radius:6px;padding:10px 12px;min-height:44px;margin:4px 3px 4px 0;text-decoration:none;vertical-align:middle;-webkit-appearance:none} button.secondary,.secondary{background:#fff;color:#174e65;border-color:#9bb2b8} button:disabled{opacity:.45} .counter button{font-size:24px;width:46px;padding:5px;margin:0} textarea{width:100%;font:13px monospace;border:1px solid #aebfc2;padding:8px;min-height:140px;border-radius:5px} input{max-width:100%;font-size:16px} #total{font-size:30px;font-weight:bold} #outputBox{display:none} @media(max-width:450px){body{font-size:15px}.counter button{width:38px}.count{width:26px}}
+</style>
+</head>
+<body>
+<header><small>CENT AGULLES</small><h1>Prova iPad antic · iOS 9</h1></header>
+<main>
+<noscript><section class="bad">JavaScript no està disponible. La prova no pot funcionar.</section></noscript>
+<section><p class="notice"><strong>Només dades fictícies.</strong> No importis aquest CSV a Access. Aquesta prova no modifica l'aplicació habitual.</p>
+<div class="status" id="js">JavaScript: pendent</div><div class="status" id="cache">Memòria sense Internet: pendent</div><div class="status" id="storage">Desament local: pendent</div><div class="status" id="connection">Connexió indicada pel navegador: pendent</div></section>
+<section><h2>Vendes de prova</h2><p>Total: <span id="total">0</span> peces</p>
+<div class="model"><div class="name"><strong>Armilla de prova</strong><small>Talla M · Estoc restant: <span id="stock0">10</span></small></div><div class="counter"><button id="minus0" class="secondary" disabled>−</button><span class="count" id="qty0">0</span><button id="plus0" disabled>+</button></div></div>
+<div class="model"><div class="name"><strong>Bossa de prova</strong><small>Sense talla · Estoc restant: <span id="stock1">8</span></small></div><div class="counter"><button id="minus1" class="secondary" disabled>−</button><span class="count" id="qty1">0</span><button id="plus1" disabled>+</button></div></div>
+<p id="saved" class="status"></p><button id="reset" class="secondary" disabled>Reiniciar prova</button></section>
+<section><h2>Recuperar el CSV de prova</h2><p>El text del CSV es pot recuperar sense Internet. La descàrrega de fitxers pot no funcionar en aquest Safari.</p><button id="export" disabled>Mostrar CSV</button><div id="outputBox"><textarea id="output" readonly></textarea><p><a id="download" class="action secondary" target="_blank" download="PROVA_iOS9.csv">Intentar obrir / descarregar CSV</a><a id="mail" class="action secondary">Enviar per correu</a></p><p class="status">Si no es pot descarregar, mantén premut el text per seleccionar-lo i copiar-lo. El correu necessita un compte configurat i connexió per enviar-se.</p></div></section>
+<section><h2>Prova de lectura de fitxers (opcional)</h2><p>Si l'iPad permet seleccionar un CSV, el llegirem localment i en mostrarem la primera línia. No es modifica el full.</p><input type="file" id="file"><p id="fileResult" class="status">Cap fitxer seleccionat.</p></section>
+<p class="status">Versió de diagnòstic 1.0 · JavaScript ES5 · AppCache · LocalStorage</p>
+</main>
+<script>
+(function () {
+  'use strict';
+  var key='cent_agulles_legacy_diagnostic_v1', s=null, storageOK=false, cache;
+  function el(id){return document.getElementById(id);}
+  function show(id,msg,cls){var node=el(id);node.textContent=msg;if(cls){node.className='status '+cls;}}
+  function pad(n){return n<10?'0'+n:String(n);}
+  function dateText(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());}
+  function fresh(){return {id:'legacy-prova-'+String(new Date().getTime())+'-'+String(Math.random()).slice(2),started:dateText(new Date()),updated:dateText(new Date()),q:[0,0]};}
+  function valid(x){return x&&typeof x.id==='string'&&typeof x.started==='string'&&typeof x.updated==='string'&&x.q&&x.q.length===2&&typeof x.q[0]==='number'&&typeof x.q[1]==='number'&&x.q[0]>=0&&x.q[0]<=10&&x.q[1]>=0&&x.q[1]<=8&&Math.floor(x.q[0])===x.q[0]&&Math.floor(x.q[1])===x.q[1];}
+  function render(){if(!s){return;}var i, limits=[10,8];for(i=0;i<2;i++){el('qty'+i).textContent=s.q[i];el('stock'+i).textContent=limits[i]-s.q[i];el('plus'+i).disabled=!storageOK||s.q[i]>=limits[i];el('minus'+i).disabled=!storageOK||s.q[i]<=0;}el('total').textContent=s.q[0]+s.q[1];el('reset').disabled=!storageOK;el('export').disabled=false;show('saved','Darrer canvi desat: '+s.updated);}
+  function save(next){try{var raw=JSON.stringify(next);localStorage.setItem(key,raw);if(localStorage.getItem(key)!==raw){throw new Error('No es pot verificar el desament');}s=next;storageOK=true;show('storage','Desament local: disponible i verificat','ok');render();el('outputBox').style.display='none';return true;}catch(e){storageOK=false;show('storage','Error de desament: '+e.message+'. No es permeten més canvis.','bad');render();return false;}}
+  function change(i,delta){if(!storageOK||!s){return;}var next=JSON.parse(JSON.stringify(s)), n=next.q[i]+delta;if(n<0||n>(i===0?10:8)){return;}next.q[i]=n;next.updated=dateText(new Date());save(next);}
+  function connection(){show('connection','Connexió indicada pel navegador: '+(navigator.onLine===false?'sense xarxa':(navigator.onLine===true?'amb xarxa (orientatiu)':'desconeguda')));}
+  function cacheState(){if(!cache){return;}var n=cache.status;if(n===0){show('cache','Memòria sense Internet: no associada encara','bad');}else if(n===1){show('cache','Memòria sense Internet: preparada (AppCache)','ok');}else if(n===2||n===3){show('cache','Memòria sense Internet: preparant, espera...');}else if(n===4){show('cache','Memòria sense Internet: actualització preparada; torna a obrir la pàgina','ok');}else{show('cache','Memòria sense Internet: no disponible','bad');}}
+  function csv(){var a=['id_full_extern;data_inici;data_final;lloc;mode;id_model;qty_S;qty_M;qty_L;qty_XL;qty_XXL;qty_SenseTalla'];var p=[s.id,s.started,s.updated,'Diagnòstic iOS9','PROVA'];if(s.q[0]){a.push(p.concat([1,0,s.q[0],0,0,0,0]).join(';'));}if(s.q[1]){a.push(p.concat([2,0,0,0,0,0,s.q[1]]).join(';'));}return a.join('\r\n')+'\r\n';}
+  show('js','JavaScript: funciona (ES5)','ok');
+  try{var old=localStorage.getItem(key);if(old){s=JSON.parse(old);if(!valid(s)){s=null;throw new Error('Dades locals no vàlides');}}save(s||fresh());}catch(e){storageOK=false;show('storage','Desament local: error '+e.message,'bad');}
+  el('plus0').onclick=function(){change(0,1);};el('minus0').onclick=function(){change(0,-1);};el('plus1').onclick=function(){change(1,1);};el('minus1').onclick=function(){change(1,-1);};
+  el('reset').onclick=function(){if(storageOK&&confirm('Esborrar només les vendes fictícies de la prova?')){save(fresh());}};
+  el('export').onclick=function(){if(!s){return;}var t=csv();el('output').value=t;el('download').href='data:text/plain;charset=utf-8,'+encodeURIComponent('\uFEFF'+t);el('mail').href='mailto:?subject='+encodeURIComponent('PROVA iOS9 - Cent Agulles')+'&body='+encodeURIComponent(t);el('outputBox').style.display='block';};
+  el('file').onchange=function(){var f=this.files&&this.files[0];if(!f){return;}if(!window.FileReader){show('fileResult','FileReader no disponible','bad');return;}if(f.size>1000000){show('fileResult','Fitxer massa gran per a la prova (màxim 1 MB)','bad');return;}var r=new FileReader();r.onload=function(){var t=String(r.result).replace(/^\uFEFF/,'');show('fileResult','Lectura correcta: '+f.name+' · '+t.split(/\r\n|\n|\r/)[0],'ok');};r.onerror=function(){show('fileResult','No s’ha pogut llegir el fitxer.','bad');};r.readAsText(f,'UTF-8');};
+  connection();window.addEventListener('online',connection,false);window.addEventListener('offline',connection,false);
+  try{cache=window.applicationCache;if(!cache){show('cache','AppCache no disponible en aquest navegador. Prova-ho a l’iPad amb iOS 9.','bad');}else{var events=['checking','downloading','progress','cached','noupdate','updateready','obsolete'];for(var j=0;j<events.length;j++){cache.addEventListener(events[j],cacheState,false);}cache.addEventListener('error',function(){show('cache','AppCache: error de càrrega. Cal comprovar el manifest i el servidor.','bad');},false);cacheState();}}catch(e){show('cache','AppCache: '+e.message,'bad');}
+}());
+</script>
+</body>
+</html>
