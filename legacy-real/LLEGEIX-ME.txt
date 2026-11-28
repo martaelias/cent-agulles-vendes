@@ -1,0 +1,26 @@
+CENT AGULLES — Full de vendes iPad (Legacy real 1.0)
+
+INSTAL·LACIÓ
+1. Descomprimeix aquest ZIP. A l'arrel del repositori GitHub, crea la carpeta legacy-real i puja-hi index.html i cache.appcache (els dos fitxers dins de legacy-real).
+2. No substitueixis index.html, sw.js ni cap fitxer de l'arrel, ni els de legacy/ (diagnòstic).
+3. Comprova la publicació amb:
+   curl.exe -i https://martaelias.github.io/cent-agulles-vendes/legacy-real/cache.appcache
+4. A l'iPad, amb Wi-Fi, obre manualment:
+   https://martaelias.github.io/cent-agulles-vendes/legacy-real/index.html
+   Espera que la memòria sense Internet estigui preparada. Si hi ha una actualització, torna a obrir la pàgina amb Wi-Fi.
+
+PROVES ABANS D'ÚS REAL
+- Carrega Dades de prova. Registra vendes i comprova les talles i complements.
+- Activa el mode avió, desactiva Wi-Fi, tanca Safari, torna a obrir exactament la mateixa adreça, i reinicia l'iPad. Comprova que conserva les dades.
+- Finalitza el full, exporta CSV, copia el text o intenta enviar-lo per correu. Comprova que el CSV arriba complet a l'ordinador. NO importis dades PROVA a Access.
+- Prova també models_EXEMPLE.csv (fitxer local, no cal pujar-lo a GitHub), o enganxa el seu text al camp CSV. El mode PROVA del fitxer es conserva.
+- Prova còpia i restauració JSON només amb dades fictícies. Verifica després amb una còpia de la base de dades Access i una exportació del catàleg real abans d'una fira.
+
+NOTES
+- La clau de desament és independent de l'aplicació original i del diagnòstic. Els fulls no es sincronitzen entre versions ni entre dispositius. Per migrar dades, utilitza una còpia JSON explícita i verifica-la abans de substituir dades locals.
+- L'aplicació conserva les columnes d'importació i exportació del codi original. L'exportació és amb punt i coma, cometes, CRLF i BOM UTF-8 en el fitxer que s'intenta descarregar. Quan es copia el text manualment, desa'l com a CSV UTF-8 i comprova les línies i els accents. No s'ha verificat la importació real a Access.
+- iOS 9 pot no permetre seleccionar o descarregar CSV; hi ha opcions per enganxar text i recuperar text de CSV/JSON. Per correus llargs, copia manualment el text i comprova que no s'ha truncat. No esborra les vendes en exportar.
+- El mode REAL requereix un catàleg d'Access autèntic. No facis servir dades de prova en la base de dades real.
+- No esborris les dades de Safari. Conserva còpies externes: la memòria del navegador no és una còpia de seguretat permanent.
+- En navegadors moderns AppCache no existeix; la versió habitual segueix sent la indicada per a aquests dispositius. El service worker de l'arrel pot interceptar navegacions offline en navegadors moderns.
+- S'ha comprovat la lògica amb un entorn JavaScript simulat; encara cal provar aquesta nova versió a l'iPad físic i amb Access.
