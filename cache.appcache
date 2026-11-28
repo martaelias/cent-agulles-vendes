@@ -1,6 +1,7 @@
 CACHE MANIFEST
-# Cent Agulles legacy diagnostic 1.0
+# Cent Agulles legacy real 1.0
 CACHE:
-index.html
+/cent-agulles-vendes/legacy-real/
+/cent-agulles-vendes/legacy-real/index.html
 NETWORK:
 *
